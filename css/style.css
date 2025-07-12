@@ -1,0 +1,828 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    outline: none;
+    border: none;
+    scroll-behavior: smooth;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Define CSS Variables for easy theme management */
+:root {
+    --bg-color: #01131e; /* Deeper, darker background */
+    --second-bg-color: #0c202d; /* Slightly lighter dark for sections/cards */
+    --text-color: #e0e0e0; /* Softer white text */
+    --main-color: #4092f0; /* A vibrant, rich blue */
+    --accent-glow: #00abf0; /* Original bright blue for intense glows */
+    --soft-text-color: #a0a0a0; /* Even softer white for paragraphs */
+    --border-color: rgba(255, 255, 255, 0.08); /* More subtle white border for separators */
+    --gradient-bg: linear-gradient(to bottom, #01131e, #0c202d); /* Subtle gradient for body */
+}
+
+html {
+    font-size: 62.5%; /* Base font size: 1rem = 10px, simplifies responsive font scaling */
+    overflow-x: hidden; /* Prevents horizontal scrollbar, crucial for responsive layouts */
+}
+
+body {
+    background: var(--bg-color);
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M0 0h3v3H0V0zm3 3h3v3H3V3z'/%3E%3C/g%3E%3C/svg%3E"); /* Subtle dark texture */
+    color: var(--text-color);
+    line-height: 1.7; /* Slightly increased for better readability */
+    letter-spacing: 0.02rem; /* Minor letter spacing for elegance */
+}
+
+/* Reusable Section Styling */
+section {
+    min-height: 100vh; /* Each section takes at least the full viewport height */
+    padding: 10rem 9% 2rem; /* Top/bottom padding and side padding */
+    display: flex; /* Use flexbox for consistent content alignment */
+    flex-direction: column; /* Stack content vertically within sections by default */
+    justify-content: center; /* Vertically center content */
+    align-items: center; /* Horizontally center content */
+    width: 100%; /* Ensure sections take full width */
+    position: relative; /* For potential background effects */
+    overflow: hidden; /* Ensure no content spills */
+}
+
+/* Heading Styles */
+.heading {
+    font-size: 5rem; /* Large heading font size */
+    text-align: center;
+    margin-bottom: 6rem; /* Space below heading */
+    position: relative;
+    text-transform: capitalize; /* Capitalize the first letter of each word */
+    font-weight: 800; /* Bolder headings */
+    text-shadow: 0 0 1rem rgba(0,0,0,0.3); /* Subtle text shadow */
+}
+
+.heading span {
+    color: var(--main-color); /* Apply accent color to span within heading */
+}
+
+/* ===================== */
+/* 2. Buttons & Interactions */
+/* ===================== */
+
+.btn {
+    display: inline-flex; /* Allows text and icon to sit side-by-side */
+    justify-content: center;
+    align-items: center;
+    padding: 1.6rem 4rem; /* More generous padding */
+    background: var(--main-color);
+    border-radius: 4rem; /* Pill-shaped button */
+    font-size: 1.9rem; /* Larger font */
+    color: var(--bg-color); /* Text color contrasts with button background */
+    letter-spacing: .08rem; /* Refined letter spacing */
+    font-weight: 600;
+    transition: all .6s cubic-bezier(0.23, 1, 0.32, 1); /* Smoother, more distinct transition curve */
+    margin-top: 3.5rem; /* Space above the button */
+    border: .2rem solid var(--main-color); /* Border matches button color for depth */
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.4); /* Deeper initial shadow */
+    overflow: hidden; /* Important for the hover fill effect */
+    position: relative;
+    z-index: 1; /* Ensures content is above pseudo-element */
+    cursor: pointer; /* Indicates clickable element */
+    text-transform: uppercase; /* Uppercase text for buttons */
+}
+
+.btn i { /* Styling for icons inside buttons */
+    margin-left: 1.2rem; /* Space between text and icon */
+    font-size: 2.2rem;
+}
+
+.btn::before { /* Pseudo-element for hover background fill effect */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%; /* Starts with no width */
+    height: 100%;
+    background: var(--bg-color); /* Background color on hover */
+    transition: width .6s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: -1; /* Behind the button content */
+}
+
+.btn:hover::before {
+    width: 100%; /* Expands to full width on hover */
+}
+
+.btn:hover {
+    color: var(--main-color); /* Text color changes on hover */
+    box-shadow: 0 0 3rem var(--accent-glow); /* More intense glow */
+    transform: translateY(-0.6rem); /* Subtle lift effect */
+}
+
+
+/* ===================== */
+/* 3. Header & Navigation (Updated for Responsiveness) */
+/* ===================== */
+
+.header {
+    position: fixed; /* Stays at the top of the viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 2.8rem 9%; /* Vertical and horizontal padding */
+    background: transparent;
+    display: flex;
+    justify-content: space-between; /* Logo on left, nav on right */
+    align-items: center;
+    z-index: 1000; /* Ensures header is always on top */
+    transition: background .5s ease, box-shadow .5s ease; /* Smooth transition for sticky effect */
+}
+
+.header.sticky {
+    background: var(--second-bg-color); /* Background when scrolled down */
+    box-shadow: 0 .2rem 2rem rgba(0, 0, 0, 0.5); /* Stronger shadow */
+}
+
+.logo {
+    font-size: 3.5rem;
+    color: var(--text-color);
+    font-weight: 900;
+    cursor: default;
+    text-shadow: 0 0 0.8rem rgba(0,0,0,0.3);
+}
+
+.logo span {
+    color: var(--main-color);
+    font-weight: 700;
+}
+
+.navbar {
+    /* Default desktop styles */
+    display: flex;
+    align-items: center;
+    transition: all .4s ease; /* Smooth transition for desktop nav links */
+}
+
+.navbar a {
+    font-size: 2rem;
+    color: var(--text-color);
+    margin-left: 4.8rem;
+    transition: all .4s ease;
+    font-weight: 500;
+    position: relative;
+}
+
+.navbar a::after { /* Underline animation */
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    width: 0%;
+    height: 0.2rem;
+    background: var(--main-color);
+    transition: width .3s ease;
+}
+
+.navbar a:hover::after,
+.navbar a.active::after {
+    width: 100%;
+}
+
+.navbar a:hover,
+.navbar a.active {
+    color: var(--main-color);
+    transform: translateY(-0.3rem);
+}
+
+/* Mobile Menu Icon (Hamburger) */
+#menu-icon {
+    font-size: 4.2rem;
+    color: var(--text-color);
+    cursor: pointer;
+    display: none; /* Hidden by default on larger screens */
+    transition: color .3s ease;
+}
+#menu-icon:hover {
+    color: var(--main-color);
+}
+
+
+/* ===================== */
+/* 4. Home Section */
+/* ===================== */
+
+.home {
+    flex-direction: row; /* Desktop layout: content and image side-by-side */
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 9%;
+    min-height: 100vh;
+    background: var(--bg-color);
+    background-image: var(--gradient-bg); /* Apply subtle gradient */
+}
+
+.home-content {
+    max-width: 68rem;
+    z-index: 1;
+    text-align: left;
+}
+
+.home-content h3 {
+    font-size: 4.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-shadow: 0 0 0.6rem rgba(0,0,0,0.2);
+}
+
+.home-content h3:nth-of-type(2) {
+    margin-bottom: 2.8rem;
+}
+
+.home-content h1 {
+    font-size: 7.2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-top: 1.5rem;
+    color: var(--text-color);
+    text-shadow: 0 0 1.5rem rgba(0,0,0,0.4);
+}
+
+.home-content .multiple-text {
+    color: var(--main-color);
+    text-shadow: 0 0 1rem var(--accent-glow);
+}
+
+.home-content p {
+    font-size: 2rem;
+    margin: 3.5rem 0 4.5rem;
+    line-height: 1.8;
+    color: var(--soft-text-color);
+    text-shadow: 0 0 0.2rem rgba(0,0,0,0.1);
+}
+
+.home-img {
+    position: relative;
+    width: 45vw;
+    max-width: 550px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 6rem;
+}
+
+.home-img .glowing-circle {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg at 50% 50%, var(--main-color) 0%, transparent 40%, transparent 60%, var(--main-color) 100%);
+    animation: rotateCircle 12s linear infinite;
+    padding: 15px;
+    box-shadow: 0 0 5rem var(--accent-glow);
+}
+
+.home-img .glowing-circle::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg at 50% 50%, transparent 30%, var(--accent-glow) 60%, transparent 100%);
+    animation: rotateCircleReverse 12s linear infinite;
+    filter: blur(15px);
+    opacity: 0.8;
+}
+
+.home-img .glowing-circle img {
+    position: relative;
+    width: 95%;
+    height: 95%;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 3rem var(--accent-glow);
+    animation: floatImage 4s ease-in-out infinite;
+    z-index: 2;
+    border: .8rem solid var(--bg-color);
+}
+
+/* Animations for Home Section - no change to keyframes */
+@keyframes floatImage {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-2.8rem); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes rotateCircle {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes rotateCircleReverse {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+.social-media {
+    display: flex;
+    justify-content: flex-start;
+    gap: 2.2rem;
+    margin-top: 4.5rem;
+}
+
+.social-media a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 5.5rem;
+    height: 5.5rem;
+    background: transparent;
+    border: .2rem solid var(--main-color);
+    border-radius: 50%;
+    font-size: 2.6rem;
+    color: var(--main-color);
+    transition: all .5s ease;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    box-shadow: 0 0 0.8rem rgba(0,0,0,0.3);
+}
+
+.social-media a::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 100%;
+    background: var(--main-color);
+    left: 0;
+    top: 0;
+    transition: width .5s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: -1;
+}
+
+.social-media a:hover::before {
+    width: 100%;
+}
+
+.social-media a:hover {
+    color: var(--bg-color);
+    box-shadow: 0 0 2rem var(--accent-glow);
+    transform: translateY(-1rem);
+}
+
+/* ===================== */
+/* 5. About Section */
+/* ===================== */
+
+.about {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 7rem;
+    background: var(--second-bg-color);
+    padding-bottom: 10rem;
+    box-shadow: inset 0 0.5rem 2rem rgba(0,0,0,0.2);
+}
+
+.about-img {
+    flex: 1;
+    text-align: center;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.about-img img {
+    width: 100%;
+    height: auto;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 4rem var(--main-color);
+    border: .8rem solid var(--main-color);
+    transition: transform .6s ease, box-shadow .6s ease;
+}
+
+.about-img img:hover {
+    transform: scale(1.05) rotate(-3deg);
+    box-shadow: 0 0 5.5rem var(--accent-glow);
+}
+
+.about-content {
+    flex: 2;
+    text-align: left;
+    max-width: 95rem;
+}
+
+.about-content h3 {
+    font-size: 3.8rem;
+    margin-bottom: 2.8rem;
+    line-height: 1.3;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.about-content p {
+    font-size: 1.9rem;
+    margin-bottom: 4rem;
+    line-height: 1.8;
+    color: var(--soft-text-color);
+}
+
+/* ===================== */
+/* 6. Skills Section */
+/* ===================== */
+
+.skills {
+    background: var(--bg-color);
+    padding-bottom: 10rem;
+}
+
+.skills-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3.5rem;
+    max-width: 1300px;
+    width: 100%;
+}
+
+.skill-item {
+    background: var(--second-bg-color);
+    padding: 3.5rem 5rem;
+    border-radius: 2rem;
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: var(--main-color);
+    text-align: center;
+    min-width: 22rem;
+    transition: all .5s ease;
+    border: .2rem solid var(--main-color);
+    box-shadow: 0 0 2rem rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.skill-item i {
+    font-size: 4.5rem;
+    margin-bottom: 1.2rem;
+    color: var(--text-color);
+}
+
+.skill-item:hover {
+    transform: translateY(-2.2rem) scale(1.07);
+    box-shadow: 0 0 5rem var(--main-color);
+    background: var(--main-color);
+    color: var(--bg-color);
+}
+
+.skill-item:hover i {
+    color: var(--bg-color);
+}
+
+
+/* ===================== */
+/* 7. Portfolio Section */
+/* ===================== */
+
+.portfolio {
+    background: var(--second-bg-color);
+    padding-bottom: 10rem;
+    box-shadow: inset 0 0.5rem 2rem rgba(0,0,0,0.2);
+}
+
+.portfolio-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(36rem, 1fr));
+    gap: 4rem;
+    max-width: 1400px;
+    width: 100%;
+}
+
+.portfolio-box {
+    position: relative;
+    border-radius: 2.5rem;
+    box-shadow: 0 0 1.5rem rgba(0, 0, 0, .4);
+    overflow: hidden;
+    display: flex;
+    border: .2rem solid var(--main-color);
+    transition: all .5s ease;
+    cursor: pointer;
+    flex-direction: column;
+    background: var(--bg-color);
+}
+
+.portfolio-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 3.5rem var(--main-color);
+}
+
+.portfolio-box img {
+    width: 100%;
+    display: block;
+    transition: .6s ease;
+    height: 280px;
+    object-fit: cover;
+}
+
+.portfolio-box:hover img {
+    transform: scale(1.15);
+    filter: brightness(0.7);
+}
+
+.portfolio-box .portfolio-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, .9), transparent 20%, var(--main-color));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 0 4rem;
+    transform: translateY(100%);
+    transition: .5s cubic-bezier(0.23, 1, 0.32, 1);
+    color: var(--text-color);
+    opacity: 0;
+}
+
+.portfolio-box:hover .portfolio-layer {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.portfolio-layer h4 {
+    font-size: 3.2rem;
+    margin-bottom: 1.8rem;
+    font-weight: 700;
+    text-shadow: 0 0 0.8rem rgba(0,0,0,0.5);
+}
+
+.portfolio-layer p {
+    font-size: 1.8rem;
+    margin-bottom: 2.8rem;
+    line-height: 1.6;
+    color: var(--soft-text-color);
+}
+
+.portfolio-layer a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 6.5rem;
+    height: 6.5rem;
+    background: var(--text-color);
+    border-radius: 50%;
+    color: var(--main-color);
+    font-size: 3rem;
+    transition: all .3s ease;
+    box-shadow: 0 0 1.2rem rgba(0,0,0,0.3);
+}
+
+.portfolio-layer a:hover {
+    background: var(--bg-color);
+    box-shadow: 0 0 2.5rem var(--text-color);
+    transform: scale(1.1);
+}
+
+/* ===================== */
+/* 8. Contact Section */
+/* ===================== */
+
+.contact {
+    background: var(--bg-color);
+    padding-bottom: 10rem;
+}
+
+.contact form {
+    max-width: 85rem;
+    margin: 0 auto;
+    text-align: center;
+    padding: 5rem;
+    background: var(--second-bg-color);
+    border-radius: 2rem;
+    box-shadow: 0 0 3rem rgba(0, 0, 0, 0.5);
+    width: 100%;
+}
+
+.contact form .input-box {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+
+.contact form .input-box input,
+.contact form textarea {
+    width: 100%;
+    padding: 2rem;
+    font-size: 1.9rem;
+    color: var(--text-color);
+    background: var(--bg-color);
+    border-radius: 1rem;
+    margin-bottom: 1.8rem;
+    box-shadow: inset 0 0 0.8rem rgba(0, 0, 0, 0.4);
+    transition: border-color .3s ease, box-shadow .3s ease;
+    border: .1rem solid transparent;
+}
+
+.contact form .input-box input:focus,
+.contact form textarea:focus {
+    border-color: var(--main-color);
+    box-shadow: 0 0 1.5rem var(--main-color);
+}
+
+.contact form .input-box input {
+    width: 49%;
+}
+
+.contact form textarea {
+    resize: vertical;
+    min-height: 220px;
+}
+
+.contact form .btn {
+    margin-top: 1.5rem;
+    width: 60%;
+    max-width: 35rem;
+}
+
+/* ===================== */
+/* 9. Footer */
+/* ===================== */
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 3rem 9%;
+    background: var(--second-bg-color);
+    border-top: .1rem solid var(--border-color);
+    box-shadow: inset 0 0.3rem 1.5rem rgba(0,0,0,0.2);
+}
+
+.footer-text p {
+    font-size: 1.8rem;
+    color: var(--soft-text-color);
+}
+
+.footer-iconTop a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.2rem 1.4rem;
+    background: var(--main-color);
+    border-radius: 1rem;
+    transition: .5s ease;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.3);
+}
+
+.footer-iconTop a i {
+    font-size: 2.8rem;
+    color: var(--bg-color);
+}
+
+.footer-iconTop a:hover {
+    box-shadow: 0 0 2.5rem var(--main-color);
+    transform: translateY(-1rem);
+    background: var(--accent-glow);
+}
+
+
+/* ===================== */
+/* 10. Breakpoints (Responsive Design) - Navbar Specific Changes */
+/* ===================== */
+
+/* Large devices (laptops, desktops) */
+@media (max-width: 1200px) {
+    html {
+        font-size: 55%;
+    }
+    /* Other sections' adjustments */
+    .home-content { max-width: 60rem; }
+    .home-img { width: 40vw; margin-left: 4rem; }
+    .about-content { max-width: 80rem; }
+    .portfolio-container { grid-template-columns: repeat(auto-fit, minmax(32rem, 1fr)); }
+}
+
+/* Medium devices (tablets, smaller laptops) */
+@media (max-width: 991px) {
+    .header {
+        padding: 2.5rem 4%;
+    }
+
+    /* NAV BAR SPECIFIC CHANGES */
+    .navbar {
+        position: absolute;
+        top: 100%; /* Position right below the header */
+        left: 0;
+        width: 100%;
+        padding: 0; /* No initial padding, controlled by list items */
+        background: var(--bg-color);
+        box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .4);
+        /* Key for smooth animation: */
+        max-height: 0; /* Start hidden */
+        overflow: hidden; /* Hide overflowing content */
+        opacity: 0; /* Start invisible */
+        transition: max-height .5s ease-in-out, opacity .5s ease-in-out; /* Smooth transition */
+        flex-direction: column; /* Stack links vertically */
+        align-items: flex-start; /* Align links to the left */
+    }
+
+    .navbar.active {
+        max-height: 300px; /* Adjust as needed to fit all links, or use a larger value like 100vh */
+        opacity: 1; /* Fade in */
+        padding: 1.5rem 4%; /* Add padding when active */
+    }
+
+    .navbar a {
+        display: block; /* Each link takes full width */
+        font-size: 2.4rem; /* Larger font for mobile menu links */
+        margin: 1.5rem 0; /* Vertical spacing between links */
+        text-align: left; /* Align text left within the mobile menu */
+        width: 100%; /* Ensure link takes full width for clickability */
+        padding: 0.5rem 0; /* Add some padding for touch target */
+    }
+
+    #menu-icon {
+        display: block; /* Show the hamburger icon */
+    }
+    /* END NAV BAR SPECIFIC CHANGES */
+
+    /* Other sections' adjustments */
+    section { padding: 10rem 4% 2rem; }
+    .home { flex-direction: column-reverse; text-align: center; padding: 10rem 4%; }
+    .home-content { max-width: 100%; text-align: center; margin-bottom: 6rem; }
+    .home-content h3:nth-of-type(2) { margin-bottom: 2rem; }
+    .home-img { width: 75vw; margin: 0 0 6rem 0; max-width: 450px; }
+    .home-img .glowing-circle { padding: 12px; }
+    .home-img .glowing-circle img { top: 3%; left: 3%; width: 94%; height: 94%; border: .6rem solid var(--bg-color); }
+    .home-img .glowing-circle::before { inset: 8px; }
+    .social-media { justify-content: center; margin-top: 3.5rem; width: 100%; }
+    .about { flex-direction: column; text-align: center; padding-bottom: 8rem; }
+    .about-content { text-align: center; }
+    .about-img { margin-bottom: 5rem; max-width: 400px; }
+    .about-img img { border-radius: 1rem; border: .6rem solid var(--main-color); }
+    .skills-content { gap: 3rem; }
+    .portfolio-container { grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr)); gap: 3rem; }
+    .footer { flex-direction: column-reverse; text-align: center; padding: 2rem 4%; }
+    .footer p { text-align: center; margin-top: 2rem; }
+}
+
+/* Small devices (phones in landscape, smaller tablets) */
+@media (max-width: 768px) {
+    /* NAV BAR SPECIFIC CHANGES */
+    .navbar a {
+        font-size: 2.2rem; /* Slightly smaller for smaller tablets */
+        margin: 2.5rem 0;
+    }
+    #menu-icon {
+        font-size: 4rem;
+    }
+    /* END NAV BAR SPECIFIC CHANGES */
+
+    /* Other sections' adjustments */
+    .home-content h1 { font-size: 6rem; }
+    .home-content h3 { font-size: 3.5rem; }
+    .home-img { width: 85vw; max-width: 400px; }
+    .contact form .input-box { flex-direction: column; }
+    .contact form .input-box input { width: 100%; }
+    .contact form .btn { width: 80%; max-width: 30rem; }
+    .portfolio-layer h4 { font-size: 2.8rem; }
+    .portfolio-layer p { font-size: 1.7rem; }
+}
+
+/* Extra small devices (most phones in portrait) */
+@media (max-width: 450px) {
+    html {
+        font-size: 40%;
+    }
+    /* NAV BAR SPECIFIC CHANGES */
+    .navbar a {
+        font-size: 2rem; /* Adjust font size for very small phones */
+        margin: 2rem 0;
+    }
+    /* END NAV BAR SPECIFIC CHANGES */
+
+    /* Other sections' adjustments */
+    .heading { font-size: 4.5rem; margin-bottom: 5rem; }
+    .home-content h1 { font-size: 5rem; }
+    .home-content h3 { font-size: 3rem; }
+    .home-content p { font-size: 1.8rem; }
+    .home-img { width: 95vw; }
+    .portfolio-container { grid-template-columns: 1fr; gap: 2.5rem; }
+    .contact form { padding: 3.5rem; }
+    .contact form .btn { width: 90%; }
+    .social-media a { width: 5rem; height: 5rem; font-size: 2.4rem; }
+}
+
+/* Very small devices (e.g., iPhone SE) */
+@media (max-width: 360px) {
+    .home-content h1 { font-size: 4.5rem; }
+    .home-content h3 { font-size: 2.8rem; }
+    .home-img { width: 100%; max-width: 300px; }
+    .social-media { flex-wrap: wrap; justify-content: center; gap: 0.8rem; }
+    .social-media a { margin: 0.4rem; }
+    .btn { width: 100%; }
+}
